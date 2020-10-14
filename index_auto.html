@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>正在分配</title>
+<style type="text/css">
+.load{
+	width: 100%;
+	height: 100vh;
+	position: fixed;
+	top: 0;
+	z-index: 10000;
+	//display: none;
+	background-color: rgba(0, 0, 0, 0.1);
+}
+.loader{
+	width: 80%;
+	height: 30%;
+	text-align: center;
+	position: absolute;
+	top: calc(30%);
+	left: calc(10%);
+	padding-top: 15px;
+	background-color: rgba(0, 0, 0, 0.5);
+	border-radius: 5px;
+}
+#loader-1{
+	width: 80%;
+	height: 80%;
+}
+.load-msg{
+	height: 50px;
+	line-height: 50px;
+	color: #fff;
+	font-size: 300%;
+	margin-top: 20px;
+}
+svg path, svg rect {
+	fill: #17a085;
+}
+</style>
+</head>
+
+<body>
+
+<div class="load">
+	<div class="loader" title="2">
+		<svg version="1.1" id="loader-1"  x="0px" y="0px" width="100px" height="100px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+			<path fill="#000" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
+				<animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite" />
+			</path>
+		</svg>
+		<div class="load-msg"> 正在分配线路，请稍等</div>
+	</div>
+</div>
+<script type="text/javascript" src="../js/jquery-2.1.1.min.js"></script>
+<script>
+
+	var mian_url = '{url}';
+	var fun_url = '{controller}';
+	var token = localStorage.getItem("vip_token");
+	var jsonData =   localStorage.getItem('vip_url_data');
+	var jdata=new Array();
+	var t_data = new Array();
+	var j_data = {};
+	var vip_url_i = localStorage.getItem('vip_url_i');
+	var url_i = 0;
+	var default_url_bool = false;
+	
+	if (jsonData == null){
+		jdata['vip_url'] = mian_url ;
+		jdata['error_num'] = 0;
+		t_data.push(jdata);
+		localStorage.setItem("vip_url_data",arrayToJsonString(t_data));
+		t_data = JSON.parse(arrayToJsonString(t_data));;
+	}else{
+
+		t_data = JSON.parse(jsonData);;
+	}
+	
+	start();
+	/*setTimeout(function () {
+		start();
+	}, 6000);*/
+	
+	function start(){
+		url_i = t_data.length -1;
+		if (vip_url_i == null){
+			get_(t_data[url_i]['vip_url']);
+		}else{
+			get_(t_data[vip_url_i]['vip_url']);
+		}
+	}
+
+	 function getQueryString(name) { 
+  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
+  var r = window.location.search.substr(1).match(reg); 
+  if (r != null) return unescape(r[2]); return null; 
+ } 
+	
+	function distribution(url){
+		if (default_url_bool == false){
+			default_url_bool = true;
+		}else{
+			url_i =url_i - 1;
+		}
+		
+		if (url_i == vip_url_i && url_i >=1){
+			url_i =url_i - 1;
+		}
+
+		if (url_i >=0){
+			get_(t_data[url_i]['vip_url']);
+		}else{
+			window.location.href = '404.html';
+		}
+		
+	}
+	
+	function get_(get_mian_url){
+	var lourl='';
+	
+		$(function(){
+			$.ajaxSetup({
+					error:function(x,e){
+						distribution(get_mian_url);
+						return false;
+					}
+				});
+			
+			if (token != null && token != '' && token !='null'){
+				get_url = get_mian_url + fun_url + "?callback=?&token=" +token;
+			}else{
+				get_url= get_mian_url + fun_url + "?callback=?";
+			}
+
+			
+			$.getJSON(get_url,function(jsonstr){
+				if (jsonstr.code == 200 ){
+						lourl= get_mian_url;
+				}else {
+					distribution();
+					return false;
+				}
+				
+				if (jsonstr.url != null && jsonstr.url != '' && arrayLookup(t_data,'vip_url',jsonstr.url) == false){
+					jdata['vip_url'] = jsonstr.url;
+					jdata['error_num'] = 0;
+					t_data.push(jdata);
+					localStorage.setItem("vip_url_data",arrayToJsonString(t_data));
+					localStorage.removeItem('vip_url_i');
+				}else{
+					if (vip_url_i == null ||  t_data[vip_url_i]['vip_url'] != get_mian_url){
+						localStorage.setItem("vip_url_i",url_i);
+					}
+				}
+				localStorage.setItem("vip_token",jsonstr.token);
+				window.location.href = lourl;
+				
+			});		 
+
+		});
+
+	
+	}
+
+function arrayLookup(data,key,value){
+    for (var i = 0; i < data.length; i++) {
+        if(data[i][key]==value){
+            return true;
+        }
+    }
+    return false;
+}
+
+function arrayToJsonString(o) {
+    var len = o.length;
+    var new_arr = new Array();
+    var str = '',strone='',strs='',jsonstr='';
+    for(var i = 0;i<len;i++){
+           new_arr = o[i];
+            for(var k in new_arr){
+               strone += '"'+k+'"'+':'+'"'+new_arr[k]+'"'+',';
+               }
+           str = '{'+strone.substring(0,strone.length-1)+'}';
+           strone='';
+           strs += str+',';           
+           new_arr=[];     
+        }
+    strs = '['+strs.substring(0,strs.length-1)+']';
+    return strs;           
+}
+
+</script>
+
+</body>
+</html>
