@@ -1,0 +1,44 @@
+html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-user-select:none;user-select:none}
+body{line-height:1.6;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;background-color:#F5F5F5;font-size:14px;}
+*{margin:0;padding:0}
+ol,ul,li{padding-left:0;list-style-type:none}
+a{text-decoration:none;color:#696969;}
+a:hover a:visited a:link{text-decoration:none;color:#696969;}
+.header {text-align:center;width:100%;display: block;}
+.header img{height:100px;width:100px;margin:30px 0 5px 0;}
+.header p{}
+
+.content {padding-top:10px;width:100%;}
+.content li {border-radius: 8px;background-color:#ffffff;height:100px;width:100px;margin:10px;float:left;text-align:center;box-shadow: 0 0 5px #cccccc;}
+.content li img{width:30px;margin-top:23px;}
+.contentc {float:left;width:100%;}
+.api {background-color: #fff;padding: 15px 15px;position: relative;}
+.api h3 {float:left;width:100%;}
+.apired{color:#FF0000 !important;}
+.api span {font-size: 14px;font-weight: 400;line-height: 2em;color: #8d8c92;word-wrap: break-word;float:left;width:100%;}
+.api button {border: 0;outline: 0;background-color: #37c6b8;width: 100%;display: block;
+    margin-bottom: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 14px;
+    padding-right: 14px;
+    font-size: 18px;
+    text-align: center;
+    text-decoration: none;
+    overflow: visible;
+    height: 42px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    color: #fff;
+    line-height: 42px;
+    -webkit-tap-highlight-color: rgba(255,255,255,0);}
+.api input{width:100%}
+.api img{width: 20%;margin: 5px;}
+.api video{width:100%}
+.api input{height:30px;margin-bottom:5px;}
+.win_div {width:60px;height:60px;border: 1px solid #d3d3d3;float: left;margin-right: 10px;}
+.imga{width:100px;height:100px;background:url(../img/phone.png) no-repeat 4px 5px}
